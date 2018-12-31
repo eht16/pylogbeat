@@ -2,6 +2,9 @@ PyLogBeat
 =========
 
 [![Travis CI](https://travis-ci.org/eht16/pylogbeat.svg?branch=master)](https://travis-ci.org/eht16/pylogbeat)
+[![PyPI](https://img.shields.io/pypi/v/pylogbeat.svg)](https://pypi.org/project/pylogbeat/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pylogbeat.svg)](https://pypi.org/project/pylogbeat/)
+[![License](https://img.shields.io/pypi/l/pylogbeat.svg)](https://pypi.org/project/pylogbeat/)
 
 PyLogBeat is a simple, incomplete implementation of the Beats protocol
 used by Elastic Beats and Logstash. For more information about Beats see
