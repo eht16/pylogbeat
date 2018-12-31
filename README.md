@@ -24,13 +24,13 @@ Installation
 
 The easiest method is to install directly from pypi using pip:
 
-  pip install pylogbeat
+    pip install pylogbeat
 
 
 If you prefer, you can download PyLogBeat from
 https://github.com/eht16/pylogbeat and install it directly from source:
 
-    $ python setup.py install
+    python setup.py install
 
 
 Get the Source
