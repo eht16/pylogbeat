@@ -1,6 +1,6 @@
 
 os: linux
-dist: xenial
+dist: trusty
 sudo: false
 language: python
 cache: pip
