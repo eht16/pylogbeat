@@ -36,7 +36,7 @@ setup(
     author_email='enrico.troeger@uvena.de',
     url='https://github.com/eht16/pylogbeat/',
     project_urls={
-        'Travis CI': 'https://travis-ci.org/eht16/pylogbeat.svg?branch=master',
+        'Travis CI': 'https://travis-ci.org/eht16/pylogbeat/',
         'Source code': 'https://github.com/eht16/pylogbeat/',
     },
     keywords='logging logstash beats',
