@@ -41,9 +41,7 @@ setup(
     },
     keywords='logging logstash beats',
     install_requires=['six'],
-    setup_requires=['flake8', 'isort', 'check-manifest'],
     include_package_data=True,
-    test_suite='tests',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
