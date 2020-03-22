@@ -6,9 +6,17 @@
 import logging
 
 from mocket.mocket import Mocket, MocketEntry, mocketize
+
 from tests.base import BaseTestCase, mock
 from tests.fixture import MESSAGE, SOCKET_HOST, SOCKET_PORT, SOCKET_TIMEOUT
 import pylogbeat
+
+
+try:
+    BlockingIOError
+except NameError:
+    # as done in mocket.compat for Python2
+    from socket import error as BlockingIOError  # pylint: disable=redefined-builtin
 
 
 # pylint: disable=protected-access
@@ -44,10 +52,27 @@ class IntegrationTest(BaseTestCase):
             use_logging=True)
 
     @mocketize
-    def test_wrong_ack(self):
+    def test_wrong_ack_end_of_stream(self):
+        # respond with wrong ACK sequence
+        response = b'2A\x00\x00\x00\x03'
+        Mocket.register(MocketEntry((SOCKET_HOST, SOCKET_PORT), [response]))
+
+        client = self._factor_client()
+        try:
+            # on real sockets, here we would expect a timeout or no data;
+            # Mocket raises BlockingIOError
+            with self.assertRaises(BlockingIOError):
+                client.send([MESSAGE, MESSAGE])
+        finally:
+            client.close()
+
+        self.assertEqual(len(Mocket._requests), 1)
+
+    @mocketize
+    def test_wrong_ack_additional_answer(self):
         with mock.patch.object(pylogbeat, 'LOGGER', new=self._mocked_logger):
             # respond with wrong ACK sequence
-            response = b'2A\x00\x00\x00\x03'
+            response = b'2A\\x00\x00\x00\x03\x03\x03'
             Mocket.register(MocketEntry((SOCKET_HOST, SOCKET_PORT), [response]))
 
             exc = None
