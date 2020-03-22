@@ -41,7 +41,7 @@ class ConnectionException(Exception):
     pass
 
 
-class PyLogBeatClient(object):  # pylint: disable=useless-object-inheritance
+class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-object-inheritance
 
     def __init__(  # pylint: disable=too-many-arguments
             self,
@@ -105,11 +105,10 @@ class PyLogBeatClient(object):  # pylint: disable=useless-object-inheritance
     def _setup_ssl_socket(self):
         if self._ssl_verify:
             cert_reqs = ssl.CERT_REQUIRED
+        elif self._ca_certs:
+            cert_reqs = ssl.CERT_OPTIONAL
         else:
-            if self._ca_certs:
-                cert_reqs = ssl.CERT_OPTIONAL
-            else:
-                cert_reqs = ssl.CERT_NONE
+            cert_reqs = ssl.CERT_NONE
 
         self._socket = ssl.wrap_socket(
             self._socket,
@@ -124,8 +123,8 @@ class PyLogBeatClient(object):  # pylint: disable=useless-object-inheritance
 
         try:
             self._socket.close()
-        except socket.error as e:
-            self._log(logging.ERROR, 'Error closing socket: {}'.format(e), exc_info=True)
+        except socket.error as exc:
+            self._log(logging.ERROR, 'Error closing socket: {}'.format(exc), exc_info=True)
         finally:
             self._socket = None
 
