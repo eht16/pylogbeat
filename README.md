@@ -15,7 +15,7 @@ With this library it is possible to send log messages or any data to
 Logstash' beats input plugin or any other service which implements
 the Beats protocol.
 
-The main difference to other transport mechanismens like direct TCP
+The main difference to other transport mechanisms like direct TCP
 or UDP transfer is that with the Beats protocol there is a higher
 reliability of the data transfer, especially since the server
 acknowledges the data it received so the client knows whether and
@@ -34,6 +34,10 @@ If you prefer, you can download PyLogBeat from
 https://github.com/eht16/pylogbeat and install it directly from source:
 
     python setup.py install
+
+
+Due to a bug (<https://github.com/logstash-plugins/logstash-input-beats/pull/342>)
+in some Logstash versions, you will need Logstash >= 5.6.12 or Logstash >= 6.4.0.
 
 
 Get the Source
