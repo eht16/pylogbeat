@@ -182,6 +182,12 @@ Thanks to brxie for the initial code.
 ChangeLog
 ---------
 
+### 1.0.3 / 2020-04-22
+
+- Add note about required Logstash versions (#1)
+- Improve unit tests
+
+
 ### 1.0.2 / 2018-12-31
 
 - Add badges to README
