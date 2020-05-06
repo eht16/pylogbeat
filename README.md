@@ -182,6 +182,11 @@ Thanks to brxie for the initial code.
 ChangeLog
 ---------
 
+### 1.0.4 / 2020-05-06
+
+- Validate input data and fix documentation about accepted values (#2)
+
+
 ### 1.0.3 / 2020-04-22
 
 - Add note about required Logstash versions (#1)
