@@ -55,7 +55,7 @@ Usage
     message = {'@timestamp': '2018-01-02T01:02:03',  '@version': '1', 'message': 'hello world'}
     client = PyLogBeatClient('localhost', 5959, ssl_enable=False)
     client.connect()
-    client.send(message)
+    client.send([message])
     client.close()
 ```
 
@@ -63,7 +63,7 @@ Usage
 
 ```python
     with PyLogBeatClient('localhost', 5959, ssl_enable=False) as client:
-        client.send(message)
+        client.send([message])
 ```
 
 ### Using a SSL connection
@@ -71,7 +71,7 @@ Usage
 ```python
     with PyLogBeatClient('localhost', 5959, ssl_enable=True, ssl_verify=True,
             keyfile='certificate.key', certfile='certificate.crt', ca_certs='ca.crt') as client:
-        client.send(message)
+        client.send([message])
 ```
 
 For details regarding the SSL certificates and how to configure the
@@ -82,10 +82,10 @@ https://www.elastic.co/guide/en/logstash/current/plugins-inputs-beats.html.
 Message Format
 --------------
 
-`PyLogBeatClient.send()` accepts a sequence of "messages".
-The messages can either be `dict` object representing the final
-message to be sent to Logstash or a `string` which must contain
-properly formatted `JSON`.
+`PyLogBeatClient.send()` accepts a sequence (list, tuple, set) of "messages".
+The messages itself can either be a `dict` object representing the final
+message to be sent to Logstash or a `bytes` or `string` object which must
+contain properly formatted `JSON`.
 If a `dict` is passed as element, it is converted to `JSON` using
 `json.dumps()`.
 
