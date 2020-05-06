@@ -22,3 +22,17 @@ MESSAGE = {
     "program": "example.py",
     "type": "python-logstash"
 }
+
+MESSAGE_JSON = '''
+{
+    "@timestamp": "2018-12-04T01:01:27",
+    "@version": "1",
+    "host": "my-local-host",
+    "level": "INFO",
+    "logsource": "my-local-host",
+    "message": "foo bar",
+    "pid": 1234,
+    "program": "example.py",
+    "type": "python-logstash"
+}
+'''

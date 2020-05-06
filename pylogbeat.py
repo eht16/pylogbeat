@@ -19,6 +19,7 @@ import ssl
 import sys
 import zlib
 
+from six.moves import collections_abc
 import six
 
 
@@ -129,6 +130,8 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             self._socket = None
 
     def send(self, elements):
+        self._validate_elements_sequence(elements)
+
         self.connect()  # lazy init
 
         self._reinit_last_ack()
@@ -142,6 +145,34 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
 
         while not self._expected_ack_received():
             self._read_ack()
+
+    def _validate_elements_sequence(self, elements):
+        # exclude strings to not detect them below as sequence
+        valid_string_types = (six.text_type, six.binary_type)
+        if isinstance(elements, valid_string_types):
+            raise TypeError(
+                'Passed value has type "{}" but a sequence is expected'.format(type(elements)))
+
+        sequence_types = (collections_abc.Sequence, collections_abc.Set)
+        if not isinstance(elements, sequence_types):
+            raise TypeError(
+                'Passed value has type "{}" but a sequence is expected'.format(type(elements)))
+
+        if not elements:
+            return  # an empty sequence doesn't make much sense but is ok
+
+        # check the elements to be a dict or string
+        for element in elements:
+            if isinstance(element, valid_string_types):
+                continue
+            if isinstance(element, collections_abc.Mapping):
+                continue
+
+            element_index = elements.index(element)
+            raise TypeError(
+                'Element {} has type "{}" but a mapping, bytes or string object is expected'.format(
+                    element_index,
+                    type(element)))
 
     def _reinit_last_ack(self):
         self._last_ack = 0
@@ -164,7 +195,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             self._sequence = 0
 
     def _encode_json(self, element):
-        if isinstance(element, dict):
+        if isinstance(element, collections_abc.Mapping):
             element = json.dumps(element)
 
         if isinstance(element, six.string_types):
