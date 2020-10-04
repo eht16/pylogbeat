@@ -12,13 +12,6 @@ from tests.fixture import MESSAGE, SOCKET_HOST, SOCKET_PORT, SOCKET_TIMEOUT
 import pylogbeat
 
 
-try:
-    BlockingIOError
-except NameError:
-    # as done in mocket.compat for Python2
-    from socket import error as BlockingIOError  # pylint: disable=redefined-builtin
-
-
 # pylint: disable=protected-access
 # pylint: disable=no-member
 

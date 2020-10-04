@@ -19,7 +19,7 @@ class SendTest(BaseTestCase):
 
     # ----------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
-        super(SendTest, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._mock_ack_state = 'version'
         self._mock_ack_value = 3
 

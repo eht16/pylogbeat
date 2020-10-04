@@ -8,8 +8,7 @@ PyLogBeat is a simple, incomplete implementation of the Beats protocol
 used by Elastic Beats and Logstash.
 """
 
-from __future__ import print_function
-
+from collections.abc import Mapping, Sequence, Set
 from datetime import datetime
 from struct import pack, unpack
 import json
@@ -19,11 +18,8 @@ import ssl
 import sys
 import zlib
 
-from six.moves import collections_abc
-import six
 
-
-__version__ = '1.0.5'
+__version__ = '2.0.0'
 
 FRAME_TYPE_ACK = 0x41               # 'A'
 FRAME_TYPE_COMPRESSED_FRAME = 0x43  # 'C'
@@ -148,12 +144,12 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
 
     def _validate_elements_sequence(self, elements):
         # exclude strings to not detect them below as sequence
-        valid_string_types = (six.text_type, six.binary_type)
+        valid_string_types = (str, bytes)
         if isinstance(elements, valid_string_types):
             raise TypeError(
                 'Passed value has type "{}" but a sequence is expected'.format(type(elements)))
 
-        sequence_types = (collections_abc.Sequence, collections_abc.Set)
+        sequence_types = (Sequence, Set)
         if not isinstance(elements, sequence_types):
             raise TypeError(
                 'Passed value has type "{}" but a sequence is expected'.format(type(elements)))
@@ -165,7 +161,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         for element in elements:
             if isinstance(element, valid_string_types):
                 continue
-            if isinstance(element, collections_abc.Mapping):
+            if isinstance(element, Mapping):
                 continue
 
             element_index = elements.index(element)
@@ -195,10 +191,10 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             self._sequence = 0
 
     def _encode_json(self, element):
-        if isinstance(element, collections_abc.Mapping):
+        if isinstance(element, Mapping):
             element = json.dumps(element)
 
-        if isinstance(element, six.string_types):
+        if isinstance(element, str):
             element = element.encode(PAYLOAD_CHARSET)
 
         json_length = len(element)
