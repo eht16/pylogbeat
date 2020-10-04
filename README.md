@@ -182,6 +182,12 @@ Thanks to brxie for the initial code.
 ChangeLog
 ---------
 
+### 2.0.0 / 2020-10-04
+
+- Remove "six" dependency
+- Require Python >= 3.6
+
+
 ### 1.0.5 / 2020-10-04
 
 - Set `python_requires` to Python >=2.7 or Python >= 3.6 for
