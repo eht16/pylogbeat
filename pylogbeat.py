@@ -23,7 +23,7 @@ from six.moves import collections_abc
 import six
 
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 FRAME_TYPE_ACK = 0x41               # 'A'
 FRAME_TYPE_COMPRESSED_FRAME = 0x43  # 'C'
