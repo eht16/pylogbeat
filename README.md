@@ -1,7 +1,7 @@
 PyLogBeat
 =========
 
-[![Travis CI](https://travis-ci.org/eht16/pylogbeat.svg?branch=master)](https://travis-ci.org/eht16/pylogbeat)
+[![CI Tests](https://github.com/eht16/pylogbeat/actions/workflows/tests.yml/badge.svg)](https://github.com/eht16/pylogbeat/actions/workflows/tests.yml)
 [![PyPI](https://img.shields.io/pypi/v/pylogbeat.svg)](https://pypi.org/project/pylogbeat/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pylogbeat.svg)](https://pypi.org/project/pylogbeat/)
 [![License](https://img.shields.io/pypi/l/pylogbeat.svg)](https://pypi.org/project/pylogbeat/)
