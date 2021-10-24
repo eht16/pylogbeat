@@ -69,12 +69,8 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         if self._use_logging:
             LOGGER.log(level, format_, *args, **kwargs)
         elif level >= logging.WARNING:  # print warnings to stderr
-            message_format = '{} {} {}'.format(
-                datetime.now(),
-                logging.getLevelName(level),
-                format_,
-                *args,
-                **kwargs)
+            message = format_.format(*args, **kwargs)
+            message_format = f'{datetime.now()} {logging.getLevelName(level)} {message}'
             print(message_format, *args, file=sys.stderr, **kwargs)
 
     def __enter__(self):
@@ -107,12 +103,11 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         else:
             cert_reqs = ssl.CERT_NONE
 
-        self._socket = ssl.wrap_socket(
-            self._socket,
-            keyfile=self._keyfile,
-            certfile=self._certfile,
-            ca_certs=self._ca_certs,
-            cert_reqs=cert_reqs)
+        ssl_context = ssl.create_default_context(cafile=self._ca_certs)
+        ssl_context.verify_mode = cert_reqs
+        ssl_context.check_hostname = False
+        ssl_context.load_cert_chain(self._certfile, self._keyfile)
+        self._socket = ssl_context.wrap_socket(self._socket, server_side=False)
 
     def close(self):
         if self._socket is None:
@@ -121,7 +116,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         try:
             self._socket.close()
         except socket.error as exc:
-            self._log(logging.ERROR, 'Error closing socket: {}'.format(exc), exc_info=True)
+            self._log(logging.ERROR, f'Error closing socket: {exc}', exc_info=True)
         finally:
             self._socket = None
 
@@ -146,13 +141,11 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         # exclude strings to not detect them below as sequence
         valid_string_types = (str, bytes)
         if isinstance(elements, valid_string_types):
-            raise TypeError(
-                'Passed value has type "{}" but a sequence is expected'.format(type(elements)))
+            raise TypeError(f'Passed value has type "{type(elements)}" but a sequence is expected')
 
         sequence_types = (Sequence, Set)
         if not isinstance(elements, sequence_types):
-            raise TypeError(
-                'Passed value has type "{}" but a sequence is expected'.format(type(elements)))
+            raise TypeError(f'Passed value has type "{type(elements)}" but a sequence is expected')
 
         if not elements:
             return  # an empty sequence doesn't make much sense but is ok
@@ -166,9 +159,8 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
 
             element_index = elements.index(element)
             raise TypeError(
-                'Element {} has type "{}" but a mapping, bytes or string object is expected'.format(
-                    element_index,
-                    type(element)))
+                f'Element {element_index} has type "{type(element)}" but a mapping, '
+                'bytes or string object is expected')
 
     def _reinit_last_ack(self):
         self._last_ack = 0
@@ -177,7 +169,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         return len(elements)
 
     def _factor_payload(self, elements):
-        payload_elements = list()
+        payload_elements = []
         for element in elements:
             self._increment_sequence()
             encoded_element = self._encode_json(element)
@@ -199,7 +191,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
 
         json_length = len(element)
         frame = [PROTOCOL_VERSION, FRAME_TYPE_JSON_FRAME, self._sequence, json_length, element]
-        pack_param = '>BBII{}s'.format(json_length)
+        pack_param = f'>BBII{json_length}s'
 
         payload = pack(pack_param, *frame)
         return payload
@@ -207,7 +199,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
     def _compress_payload(self, payload):
         compressed_payload = zlib.compress(payload)
         compressed_payload_bytes = len(compressed_payload)
-        pack_format = '>BBI{}s'.format(compressed_payload_bytes)
+        pack_format = f'>BBI{compressed_payload_bytes}s'
         compress = pack(
             pack_format,
             PROTOCOL_VERSION,
@@ -223,7 +215,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             FRAME_TYPE_WINDOW_SIZE,
             self._window_size)
         self._socket.send(packed_window_size)
-        self._log(logging.DEBUG, 'Sent window size: {}'.format(self._window_size))
+        self._log(logging.DEBUG, f'Sent window size: {self._window_size}')
 
     def _send_payload(self, compressed_payload):
         def chunker(chunk, size):
@@ -238,9 +230,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             written_bytes += self._socket.send(segment)
         self._log(
             logging.DEBUG,
-            'Sent payload bytes: {}, waiting for ACK: {}'.format(
-                written_bytes,
-                self._sequence))
+            f'Sent payload bytes: {written_bytes}, waiting for ACK: {self._sequence}')
 
     def _expected_ack_received(self):
         return self._last_ack == self._sequence
@@ -254,7 +244,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
 
         received_ack = self._socket.recv(4)
         self._last_ack = unpack('>I', received_ack)[0]
-        self._log(logging.DEBUG, 'Received ACK: {}'.format(self._last_ack))
+        self._log(logging.DEBUG, f'Received ACK: {self._last_ack}')
 
     def _assert_frame_type_is_ack(self, frame_type_packed):
         if frame_type_packed:
@@ -267,8 +257,5 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         self._log(
             logging.WARNING,
             'Waited for ACK from server but received an unexpected frame: '
-            '"0x{:02X}". Aborting.'.format(
-                frame_type))
-        raise ConnectionException(
-            'No ACK received or wrong frame type "0x{:02X}"'.format(
-                frame_type))
+            f'"0x{frame_type:02X}". Aborting.')
+        raise ConnectionException(f'No ACK received or wrong frame type "0x{frame_type:02X}"')

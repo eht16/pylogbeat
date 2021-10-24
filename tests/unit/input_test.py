@@ -41,7 +41,7 @@ class InputTest(BaseTestCase):
             client.connect()
             # calculate ACK
             value_len = len(valid_value)
-            ack = '\x00\x00\x00{}'.format(chr(value_len))
+            ack = f'\x00\x00\x00{chr(value_len)}'
             # mock socket.recv(): version(2), frame type(A), ACK(1)
             window_size_packed = [b'2', b'A', ack.encode('ascii')]
             client._socket.recv.side_effect = window_size_packed
