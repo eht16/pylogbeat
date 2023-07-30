@@ -11,7 +11,7 @@ from setuptools import setup
 
 
 NAME = 'pylogbeat'
-VERSION = '2.0.0'
+VERSION = '2.0.1'
 
 here = path.abspath(path. dirname(__file__))
 with open(path.join(here, 'README.md'), 'rb') as f:

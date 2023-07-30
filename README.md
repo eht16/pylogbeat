@@ -182,6 +182,11 @@ Thanks to brxie for the initial code.
 ChangeLog
 ---------
 
+### 2.0.1 / 2023-07-30
+
+- Load certificate chain only if a certificate was specified
+
+
 ### 2.0.0 / 2020-10-04
 
 - Remove "six" dependency
