@@ -104,9 +104,10 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             cert_reqs = ssl.CERT_NONE
 
         ssl_context = ssl.create_default_context(cafile=self._ca_certs)
-        ssl_context.verify_mode = cert_reqs
         ssl_context.check_hostname = False
-        ssl_context.load_cert_chain(self._certfile, self._keyfile)
+        ssl_context.verify_mode = cert_reqs
+        if self._certfile and self._keyfile:
+            ssl_context.load_cert_chain(self._certfile, self._keyfile)
         self._socket = ssl_context.wrap_socket(self._socket, server_side=False)
 
     def close(self):
