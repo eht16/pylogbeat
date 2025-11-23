@@ -40,7 +40,7 @@ setup(
         'Source code': 'https://github.com/eht16/pylogbeat/',
     },
     keywords='logging logstash beats',
-    python_requires='>3.6',
+    python_requires='>=3.11',
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
