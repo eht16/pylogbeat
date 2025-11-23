@@ -119,8 +119,13 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             return  # nothing to do
 
         try:
+            self._socket.shutdown(socket.SHUT_WR)
+        except Exception as exc:
+            self._log(logging.ERROR, f'Error on shutting down the transport socket: {exc}')
+
+        try:
             self._socket.close()
-        except socket.error as exc:
+        except OSError as exc:
             self._log(logging.ERROR, f'Error closing socket: {exc}', exc_info=True)
         finally:
             self._socket = None
