@@ -40,7 +40,7 @@ class ConnectionException(Exception):
 
 class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-object-inheritance
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-positional-arguments,too-many-arguments
             self,
             host,
             port,

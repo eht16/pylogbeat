@@ -5,7 +5,7 @@
 
 import logging
 
-from mocket.mocket import Mocket, MocketEntry, mocketize
+from mocket import Mocket, MocketEntry, mocketize
 
 from tests.base import BaseTestCase, mock
 from tests.fixture import MESSAGE, SOCKET_HOST, SOCKET_PORT, SOCKET_TIMEOUT
