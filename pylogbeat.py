@@ -19,7 +19,7 @@ import sys
 import zlib
 
 
-__version__ = '2.0.1'
+__version__ = '2.1.0'
 
 FRAME_TYPE_ACK = 0x41               # 'A'
 FRAME_TYPE_COMPRESSED_FRAME = 0x43  # 'C'

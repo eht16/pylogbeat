@@ -182,6 +182,14 @@ Thanks to brxie for the initial code.
 ChangeLog
 ---------
 
+### 2.1.0 / 2025-11-23
+
+- Shutdown the TCP socket before closing it
+- Support setting "ssl_verify_flags" to override Python's default
+- Update test matrix to support Python 3.11 to 3.14, drop support
+  for older Python versions and require at least Python 3.11
+
+
 ### 2.0.1 / 2023-07-30
 
 - Load certificate chain only if a certificate was specified
