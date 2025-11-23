@@ -47,6 +47,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
             timeout=None,
             ssl_enable=False,
             ssl_verify=True,
+            ssl_verify_flags=None,
             keyfile=None,
             certfile=None,
             ca_certs=None,
@@ -56,6 +57,7 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         self._timeout = timeout
         self._ssl_enable = ssl_enable
         self._ssl_verify = ssl_verify
+        self._ssl_verify_flags = ssl_verify_flags
         self._keyfile = keyfile
         self._certfile = certfile
         self._ca_certs = ca_certs
@@ -106,6 +108,8 @@ class PyLogBeatClient(object):  # pylint: disable=bad-option-value,useless-objec
         ssl_context = ssl.create_default_context(cafile=self._ca_certs)
         ssl_context.check_hostname = False
         ssl_context.verify_mode = cert_reqs
+        if self._ssl_verify_flags is not None:
+            ssl_context.verify_flags = self._ssl_verify_flags
         if self._certfile and self._keyfile:
             ssl_context.load_cert_chain(self._certfile, self._keyfile)
         self._socket = ssl_context.wrap_socket(self._socket, server_side=False)
